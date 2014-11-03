@@ -1,22 +1,13 @@
 package com.ing.hackaton.control;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import oauth.signpost.OAuthConsumer;
-
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ing.hackaton.datagather.DataGathering;
-import com.ing.hackaton.datagather.OauthAuthentication;
-import com.ing.hackaton.datagather.model.Account;
-import com.ing.hackaton.datagather.model.Bank;
+import com.ing.hackaton.model.Account;
+import com.ing.hackaton.model.Bank;
 
 @RestController
 public class BankController {

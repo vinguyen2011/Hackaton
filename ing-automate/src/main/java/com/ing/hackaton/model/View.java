@@ -1,4 +1,4 @@
-package com.ing.hackaton.datagather.model;
+package com.ing.hackaton.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
