@@ -39,10 +39,6 @@ public class GreetingController {
 
 			OAuthConsumer consumer = OauthAuthentication.getInstance()
 					.getConsumer();
-			System.out.println(consumer.getConsumerKey());
-			System.out.println(consumer.getConsumerSecret());
-			System.out.println(consumer.getToken());
-			System.out.println(consumer.getTokenSecret());
 
 			URL url = new URL(
 					"https://api.openbankproject.com/obp/v1.2.1/banks/"+name+"/accounts/private");
