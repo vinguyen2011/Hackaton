@@ -1,5 +1,9 @@
 package com.ing.hackaton.datagather.model;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,6 +14,10 @@ public class Bank {
     private String full_name;
     private String logo;
     private String website;
+    
+    public Bank() {
+		
+	}
     
 	public String getId() {
 		return id;
@@ -26,6 +34,17 @@ public class Bank {
 	public String getWebsite() {
 		return website;
 	}
+	
+	public void parse(String jsonString) throws ParseException
+	{
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonString);
 
-
+		this.id = (String) jsonObject.get("id");
+		this.short_name = (String) jsonObject.get("short_name");
+		this.full_name = (String) jsonObject.get("full_name");
+		this.logo = (String) jsonObject.get("logo");
+		this.website = (String) jsonObject.get("website");
+		
+	}
 }
