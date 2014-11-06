@@ -1,3 +1,5 @@
+View images in Images folder for clarification...
+
 Step 1: Import project from existing Maven project in Eclipse
 
 Step 2: Run the Application class
