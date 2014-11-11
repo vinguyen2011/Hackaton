@@ -1,23 +1,25 @@
 Hackaton
 ========
-View images in Images folder for clarification...
 
 Step 1: Import project from existing Maven project in Eclipse
 
 Step 2: Run the Application class
 
-Step 3: In the console you will see a notification to visit a link, such as:
-https://api.openbankproject.com/oauth/authorize?oauth_token=Q3YYPNQ4SSKXDPVDIERN2GETT24NEMOIVQA04NAY
+Step 3: Install MySQL with specific credentials (view com.ing.hackaton.database.DBConnector.java)
+Import DB with the dump file Dump20141111.sql
 
-Open this link in your browser, please sign up and then log in with your credential. You will receive a verification code (5 digits).
-Then paste this code to the console and hit enter
+Step 4 (for the client): Those are APIs provided from the back-end: 
+BASE_URL: localhost:8080
+GET /addUser?username=vi&password=1234&email=thanhvi.ng@gmail.com&firstname=vi&lastname=nguyen&image=...
+--- Add one user to DB, return true/false
 
-Step 4: Open your browser and enter the link:
-http://localhost:8080/banks?name=postbank
----You should see detail of this bank gather from the API
+GET /validateUser?username=vi&password=1234
+--- Validate user, return true/false
 
-http://localhost:8080/banks/accounts/private?name=postbank 
----You should see last private accounts of this bank (authentication required)
+GET /getUser?username=vi
+--- Get user detail, return
+{"username":"vi","password":"1234","email":"...","image":"thanhvi.ng@gmail.com","firstname":"vi","lastname":"nguyen","id":6}
 
-http://localhost:8080/banks/accounts/public?name=postbank
----You should see the last public accounts of this bank (authentication not required)
+GET /addBankAccount?username=vi&account_number=12345678&bank_holder=T.T.V.Nguyen&bank_name=TESTBANK
+--- Add a bank account for an user, return true/false
+
