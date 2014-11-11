@@ -17,7 +17,7 @@ import com.ing.hackaton.datagather.OauthAuthentication;
 public class Application {
 
     public static void main(String[] args) throws OAuthMessageSignerException {
-			OauthAuthentication oath = OauthAuthentication.getInstance();
+			//OauthAuthentication oath = OauthAuthentication.getInstance();
 	        SpringApplication.run(Application.class, args);
     }
 }
