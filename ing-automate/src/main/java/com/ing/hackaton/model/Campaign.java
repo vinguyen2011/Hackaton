@@ -1,5 +1,8 @@
 package com.ing.hackaton.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Campaign {
 	private int id;
 	private String name;
@@ -94,6 +97,4 @@ public class Campaign {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
 }
