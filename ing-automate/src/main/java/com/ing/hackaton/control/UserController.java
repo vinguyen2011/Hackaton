@@ -100,4 +100,34 @@ public class UserController {
 
 		return result;
 	}
+	
+	@RequestMapping("/modifyUser")
+	public Result updateUser(
+			@RequestParam(value = "username") String username,
+			@RequestParam(value = "password") String password,
+			@RequestParam(value = "email") String email,
+			@RequestParam(value = "image") String image,
+			@RequestParam(value = "firstname") String firstname,
+			@RequestParam(value = "lastname") String lastname){
+		
+		connector.connect();
+		
+		boolean r = false;
+		try {
+			User old = impl.getUser(connector.getConn(), username);
+			User user = new User(old.getUsername(), password, image, email, 
+					firstname, lastname);
+
+			r = impl.updateUser(connector.getConn(), user);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		connector.disconnect();
+		Result result = new Result(r);
+
+		return result;
+		
+	}
 }

@@ -94,4 +94,29 @@ public class UserDaoImpl {
 		}
 		return success;
 	}
+	
+	public boolean updateUser(Connection conn, User user) throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("update user set"
+						+ " password = ?, email = ?, image = ?,"
+						+ " firstname = ?, lastname = ?)"
+						+ " where username = ?");
+		boolean success = false;
+		try {
+			stmt.setString(1, user.getPassword());
+			stmt.setString(2, user.getEmail());
+			stmt.setString(3, user.getImage());
+			stmt.setString(4, user.getFirstname());
+			stmt.setString(5, user.getLastname());
+			stmt.setString(6, user.getUsername());
+			
+			stmt.executeUpdate();
+			success = true;
+
+		} finally {
+			stmt.close();
+		}
+		return success;
+	}
+
 }
