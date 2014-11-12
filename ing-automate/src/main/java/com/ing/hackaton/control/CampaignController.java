@@ -12,7 +12,6 @@ import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.datagather.DataGathering;
 import com.ing.hackaton.model.Campaign;
 import com.ing.hackaton.model.Result;
-import com.ing.hackaton.model.User;
 
 @RestController
 public class CampaignController {
@@ -28,15 +27,16 @@ public class CampaignController {
 			@RequestParam(value = "target_amount") double target_amount,
 			@RequestParam(value = "currency") String currency,
 			@RequestParam(value = "id_receiving_account") String id_receiving_account,
-			@RequestParam(value = "creator_username") String creator_username) {
+			@RequestParam(value = "creator_username") String creator_username,
+			@RequestParam(value = "image_url") String image_url,
+			@RequestParam(value = "type") String type) {
 
 		connector.connect();
 		
 		boolean r = false;
 		try {
-			User user = userImpl.getUser(connector.getConn(), creator_username);
 			Campaign campaign = new Campaign(name, description, target_amount, 0, 
-					currency, id_receiving_account, user.getId());
+					currency, id_receiving_account, creator_username, image_url, type);
 
 			r = impl.createCampaign(connector.getConn(), campaign);
 		} catch (SQLException e) {

@@ -1,30 +1,35 @@
 package com.ing.hackaton.model;
 
 public class Campaign {
-	private String id;
+	private int id;
 	private String name;
 	private String description;
 	private double target_amount;
 	private double current_amount;
 	private String currency;
 	private String id_receiving_account;
-	private int id_creator_user;
+	private String creator_username;
+	private String image_url;
+	private String type;
 	
 	public Campaign(String name, String description, double target_amount, double current_amount,
-    		String currency, String id_receiving_account, int id_creator_user) {
+    		String currency, String id_receiving_account, String creator_username,
+    		String image_url, String type) {
     	this.name = name;
     	this.description = description;
     	this.target_amount = target_amount;
     	this.current_amount = current_amount;
     	this.currency = currency;
     	this.id_receiving_account = id_receiving_account;
-    	this.id_creator_user = id_creator_user;
+    	this.creator_username = creator_username;
+    	this.image_url = image_url;
+    	this.type = type;
     }
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -63,11 +68,31 @@ public class Campaign {
 	public void setId_receiving_account(String id_receiving_account) {
 		this.id_receiving_account = id_receiving_account;
 	}
-	public int getId_creator_user() {
-		return id_creator_user;
+	
+	
+
+	public String getCreator_username() {
+		return creator_username;
 	}
-	public void setId_creator_user(int id_creator_user) {
-		this.id_creator_user = id_creator_user;
+
+	public void setCreator_username(String creator_username) {
+		this.creator_username = creator_username;
+	}
+
+	public String getImage_url() {
+		return image_url;
+	}
+
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	
