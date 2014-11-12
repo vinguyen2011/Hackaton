@@ -131,22 +131,19 @@ public class CampaignDaoImpl {
 		PreparedStatement stmt = conn
 				.prepareStatement("update campaign set name = ?,"
 						+ " description = ?, target_amount = ?, current_amount = ?,"
-						+ " currency = ?, id_receiving_account = ?, creator_username = ?,"
-						+ " image_url = ?, type = ?)"
+						+ " image_url = ?, type = ?"
 						+ " where idcampaign = ?");
 		boolean success = false;
 		try {
 			stmt.setString(1, campaign.getName());
 			stmt.setString(2, campaign.getDescription());
 			stmt.setDouble(3, campaign.getTarget_amount());
-			stmt.setDouble(4, 0);
-			stmt.setString(5, campaign.getCurrency());
-			stmt.setString(6, campaign.getId_receiving_account());
-			stmt.setString(7, campaign.getCreator_username());
-			stmt.setString(8, campaign.getImage_url());
-			stmt.setString(9, campaign.getType());
-			stmt.setInt(10, campaign.getId());
+			stmt.setDouble(4, campaign.getCurrent_amount());
+			stmt.setString(5, campaign.getImage_url());
+			stmt.setString(6, campaign.getType());
+			stmt.setInt(7, campaign.getId());
 			
+			System.out.println(stmt.toString());
 			stmt.executeUpdate();
 			success = true;
 

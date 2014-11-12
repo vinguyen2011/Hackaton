@@ -12,9 +12,7 @@ import com.ing.hackaton.database.dao.impl.CampaignDaoImpl;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.datagather.DataGathering;
 import com.ing.hackaton.model.Campaign;
-import com.ing.hackaton.model.ListCampaign;
 import com.ing.hackaton.model.Result;
-import com.ing.hackaton.model.User;
 
 @RestController
 public class CampaignController {
@@ -59,8 +57,7 @@ public class CampaignController {
 			@RequestParam(value = "name") String name,
 			@RequestParam(value = "description") String description,
 			@RequestParam(value = "target_amount") double target_amount,
-			@RequestParam(value = "currency") String currency,
-			@RequestParam(value = "id_receiving_account") String id_receiving_account,
+			@RequestParam(value = "current_amount") double current_amount,
 			@RequestParam(value = "image_url") String image_url,
 			@RequestParam(value = "type") String type) {
 
@@ -69,10 +66,14 @@ public class CampaignController {
 		boolean r = false;
 		try {
 			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
-			Campaign campaign = new Campaign(name, description, target_amount, 0, 
-					currency, id_receiving_account, old.getCreator_username(), image_url, type);
-
-			r = impl.updateCampaign(connector.getConn(), campaign);
+			old.setName(name);
+			old.setDescription(description);
+			old.setTarget_amount(target_amount);
+			old.setCurrent_amount(current_amount);
+			old.setImage_url(image_url);
+			old.setType(type);
+			
+			r = impl.updateCampaign(connector.getConn(), old);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
