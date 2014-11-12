@@ -11,17 +11,27 @@ Import DB with the dump file Dump20141111.sql
 Step 4 (for the client): Those are APIs provided from the back-end: 
 BASE_URL: localhost:8080
 
-GET /addUser?username=vi&password=1234&email=thanhvi.ng@gmail.com&firstname=vi&lastname=nguyen&image=...
---- Add one user to DB, return true/false
+GET /addUser?username=UID14201&password=1234&email=thanhvi.ng@gmail.com&firstname=vi&lastname=nguyen&image=...
+--- Add one user to DB. Access token can be blank at this stage, return 
+{"result":"true"}
 
-GET /validateUser?username=vi&password=1234
---- Validate user, return true/false
+GET /validateUser?username=UID14201&password=1234
+--- Validate user, return 
+{"result":"true"}
 
-GET /getUser?username=vi
+GET /addAccessToken?username=UID14201&access_token=...
+--- Add access token for this user, return
+{"result":"true"}
+
+GET /getUser?username=UID14201
 --- Get user detail, return
+{"username":"UID14201","password":"1234","email":"...","image":"thanhvi.ng@gmail.com","firstname":"vi","lastname":"nguyen","access_token":"eyJhbGciOiJIUzI1NiIsImN0eSI6InRleHRcL3BsYWluIn0.eyJleHAiOjE0MTUwMDc3MzksIm5vbmNlIjoiMWJlMTQwZTEtOTE4Yy00MDY1LWE4MDAtMjUyYjA1ODA0MDY4IiwiYXVkIjpbImNsaWVudF9pZCJdLCJpc3MiOiJVSUQxNDIwMSIsImp0aSI6ImEyMzNjNmM5LWRhMTQtNGRhMC1iNDhiLWU1YThmZGEyYzVhZCIsImlhdCI6MTQxNTc4NDk5Mn0.a9HQzKwA4iC1IYKa1X5DURzIesS1t32AJCPdxgfZFdg","id":6}
 
-{"username":"vi","password":"1234","email":"...","image":"thanhvi.ng@gmail.com","firstname":"vi","lastname":"nguyen","id":6}
+GET /listAllCurrentBankAccount?username=UID14201
+--- Get all current account (code = 1100) of this user in the API -> user can select one account to send/receive money. Data gather from the Common API but not save in our DB, return
+{"id":"NL31INGX0007946820","currency":"EUR","customerDescription":"Koppe,Iris","availableBalance":39318.66}
 
-GET /addBankAccount?username=vi&account_number=12345678&bank_holder=T.T.V.Nguyen&bank_name=TESTBANK
---- Add a bank account for an user, return true/false
+GET /addCampaign?name=Birthday party&description=&target_amount=1200&currency=EUR&id_receiving_account=NL31INGX0007946820&creator_username=UID14201
+--- Add a campaign created by an user, return 
+{"result":"true"}
 
