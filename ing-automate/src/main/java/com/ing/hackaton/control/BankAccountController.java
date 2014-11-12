@@ -20,7 +20,7 @@ public class BankAccountController {
 	UserDaoImpl userImpl = new UserDaoImpl();
 	DataGathering dataCollector = new DataGathering();
 	
-	@RequestMapping("/listAllCurrentBankAccount")
+	@RequestMapping("/user/currentBankAccount")
 	public CurrentBankAccount listAllBankAccount(
 			@RequestParam(value = "username") String username) {
 		CurrentBankAccount account = new CurrentBankAccount();
