@@ -72,6 +72,11 @@ public class ContributionController {
 
 			r = impl.createContribution(connector.getConn(), contribution);
 			
+			if(r) {
+				//update campaign current amount
+				double new_amount = campaign.getCurrent_amount() + amount;
+				campaignImpl.updateCampaignCurrentAmount(connector.getConn(),id_campaign,new_amount);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

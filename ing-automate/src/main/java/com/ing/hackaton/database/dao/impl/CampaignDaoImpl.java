@@ -130,7 +130,7 @@ public class CampaignDaoImpl {
 	public boolean updateCampaign(Connection conn, Campaign campaign) throws SQLException {
 		PreparedStatement stmt = conn
 				.prepareStatement("update campaign set name = ?,"
-						+ " description = ?, target_amount = ?, current_amount = ?,"
+						+ " description = ?, target_amount = ?,"
 						+ " image_url = ?, type = ?"
 						+ " where idcampaign = ?");
 		boolean success = false;
@@ -138,12 +138,28 @@ public class CampaignDaoImpl {
 			stmt.setString(1, campaign.getName());
 			stmt.setString(2, campaign.getDescription());
 			stmt.setDouble(3, campaign.getTarget_amount());
-			stmt.setDouble(4, campaign.getCurrent_amount());
-			stmt.setString(5, campaign.getImage_url());
-			stmt.setString(6, campaign.getType());
-			stmt.setInt(7, campaign.getId());
+			stmt.setString(4, campaign.getImage_url());
+			stmt.setString(5, campaign.getType());
+			stmt.setInt(6, campaign.getId());
 			
-			System.out.println(stmt.toString());
+			stmt.executeUpdate();
+			success = true;
+
+		} finally {
+			stmt.close();
+		}
+		return success;
+	}
+	
+	public boolean updateCampaignCurrentAmount(Connection conn, int id_campaign, double amount) throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("update campaign set current_amount = ?"
+						+ " where idcampaign = ?");
+		boolean success = false;
+		try {
+			stmt.setDouble(1, amount);
+			stmt.setInt(2, id_campaign);
+			
 			stmt.executeUpdate();
 			success = true;
 

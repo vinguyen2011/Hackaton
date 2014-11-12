@@ -57,7 +57,6 @@ public class CampaignController {
 			@RequestParam(value = "name") String name,
 			@RequestParam(value = "description") String description,
 			@RequestParam(value = "target_amount") double target_amount,
-			@RequestParam(value = "current_amount") double current_amount,
 			@RequestParam(value = "image_url") String image_url,
 			@RequestParam(value = "type") String type) {
 
@@ -69,7 +68,6 @@ public class CampaignController {
 			old.setName(name);
 			old.setDescription(description);
 			old.setTarget_amount(target_amount);
-			old.setCurrent_amount(current_amount);
 			old.setImage_url(image_url);
 			old.setType(type);
 			
