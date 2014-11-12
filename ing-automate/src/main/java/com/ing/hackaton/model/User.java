@@ -7,6 +7,7 @@ public class User {
     private String image;
     private String firstname;
     private String lastname;
+    private String access_token;
     private int id;
     
     public User(String username, String password, String email, String image,
@@ -19,6 +20,14 @@ public class User {
     	this.lastname = lastname;
     }
     		
+	public String getAccess_token() {
+		return access_token;
+	}
+
+	public void setAccess_token(String access_token) {
+		this.access_token = access_token;
+	}
+
 	public String getUsername() {
 		return username;
 	}

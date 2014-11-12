@@ -69,11 +69,29 @@ public class UserDaoImpl {
 						rs.getString("firstname"),
 						rs.getString("lastname"));
 				user.setId(rs.getInt("iduser"));
+				user.setAccess_token(rs.getString("access_token"));
 			}
 			rs.close();
 		} finally {
 			stmt.close();
 		}
 		return user;
+	}
+	
+	public boolean updateToken(Connection conn, String username, String access_token) throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("UPDATE user set access_token = ? where username = ?");
+		boolean success = false;
+		try {
+			stmt.setString(1, access_token);
+			stmt.setString(2, username);
+
+			stmt.executeUpdate();
+			success = true;
+
+		} finally {
+			stmt.close();
+		}
+		return success;
 	}
 }

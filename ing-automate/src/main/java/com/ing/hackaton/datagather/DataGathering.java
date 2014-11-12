@@ -1,46 +1,80 @@
 package com.ing.hackaton.datagather;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import oauth.signpost.OAuthConsumer;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class DataGathering {
-	public String get(String str) {
-		String strReturn = "";
-		try {
-			OAuthConsumer consumer = OauthAuthentication.getInstance().getConsumer();
+	private static String API_KEY = "gotNqHyungYD4Xh0cGGirQ8XVQOK7VAS";
+	private static String BASE_URL = "http://ingcommonapi-test.apigee.net/commonapi/v0/nl/";
 
-			URL url = new URL(str);
-			HttpURLConnection request = (HttpURLConnection) url.openConnection();
-			
-			consumer.sign(request);
-			request.connect();
+	public String getWithToken(String token, String callUrl) throws Exception {
 
-			if (request.getResponseCode() != 200) {
-				throw new IOException(request.getResponseMessage());
-			}
+		String url = BASE_URL + callUrl + "?apikey=" + API_KEY;
 
-			// Buffer the result into a string
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					request.getInputStream()));
-			StringBuilder sb = new StringBuilder();
-			String line;
-			while ((line = rd.readLine()) != null) {
-				sb.append(line);
-			}
-			rd.close();
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-			request.disconnect();
-			System.out.println(sb.toString());
-			strReturn = sb.toString();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		// optional default is GET
+		con.setRequestMethod("GET");
+
+		// add request header
+		con.setRequestProperty("Authorization", "Bearer " + token);
+
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
 		}
+		in.close();
+
+		// print result
+		System.out.println(response.toString());
+
+		String strReturn = response.toString();
 		return strReturn;
 	}
+
+	public String getUserId(String token) throws Exception {
+
+		String url = BASE_URL + "me" + "?apikey=" + API_KEY;
+
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+		// optional default is GET
+		con.setRequestMethod("GET");
+
+		// add request header
+		con.setRequestProperty("Authorization", "Bearer " + token);
+
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject = (JSONObject) jsonParser.parse(response.toString());
+		
+		// get a String from the JSON object
+		String userId = (String) jsonObject.get("userId");
+
+		// print result
+		System.out.println(userId);
+
+		return userId;
+	}
+
 }
