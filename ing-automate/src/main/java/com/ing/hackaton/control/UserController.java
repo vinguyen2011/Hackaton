@@ -101,7 +101,7 @@ public class UserController {
 		return result;
 	}
 	
-	@RequestMapping("/modifyUser")
+	@RequestMapping("/updateUser")
 	public Result updateUser(
 			@RequestParam(value = "username") String username,
 			@RequestParam(value = "password") String password,

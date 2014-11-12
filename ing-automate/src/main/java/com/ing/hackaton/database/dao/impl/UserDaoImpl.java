@@ -99,7 +99,7 @@ public class UserDaoImpl {
 		PreparedStatement stmt = conn
 				.prepareStatement("update user set"
 						+ " password = ?, email = ?, image = ?,"
-						+ " firstname = ?, lastname = ?)"
+						+ " firstname = ?, lastname = ?"
 						+ " where username = ?");
 		boolean success = false;
 		try {

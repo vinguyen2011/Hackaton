@@ -2,6 +2,8 @@ package com.ing.hackaton.control;
 
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,5 +92,44 @@ public class ContributionController {
 		Result result = new Result(r);
 
 		return result;
+	}
+	
+	@RequestMapping("/getContribution")
+	public Contribution getContribution(
+			@RequestParam(value = "id_contribution") int id_contribution) {
+
+		connector.connect();
+		
+		Contribution contribution = null;
+		try {
+			contribution = impl.getContribution(connector.getConn(), id_contribution);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		connector.disconnect();
+
+		return contribution;
+	}
+	
+	@RequestMapping("/campaign/getContributions")
+	public List<Contribution> getAllContributionOfCampaign(
+			@RequestParam(value = "id_campaign") int id_campaign) {
+
+		connector.connect();
+		
+		List<Contribution> contributions = null;
+		
+		try {
+			contributions = impl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		connector.disconnect();
+
+		return contributions;
 	}
 }

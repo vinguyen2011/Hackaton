@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ing.hackaton.model.Contribution;
 
@@ -36,7 +38,7 @@ public class ContributionDaoImpl {
 	public Contribution getContribution(Connection conn, int id_contribution)
 			throws SQLException {
 		PreparedStatement stmt = conn
-				.prepareStatement("select * from contribution where id_contribution = ?");
+				.prepareStatement("select * from contribution where idcontribution = ?");
 		Contribution contribution = null;
 		try {
 			stmt.setInt(1, id_contribution);
@@ -57,6 +59,36 @@ public class ContributionDaoImpl {
 			stmt.close();
 		}
 		return contribution;
+	}
+	
+	public List<Contribution> getAllContributionsOfCampaign(Connection conn, int id_campaign)
+			throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("select * from contribution where id_campaign = ?");
+		List<Contribution> contributions = new ArrayList<Contribution>();
+		
+		Contribution contribution = null;
+		try {
+			stmt.setInt(1, id_campaign);
+
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				contribution = new Contribution(rs.getDouble("amount"),
+						rs.getString("currency"),
+						convertSqlDateToJavaDate(rs.getDate("date")),
+						rs.getString("comment"),
+						rs.getInt("id_campaign"),
+						rs.getString("id_contributing_account"),
+						rs.getString("description"));
+				contribution.setId(rs.getInt("idcontribution"));
+				contributions.add(contribution);
+			}
+			rs.close();
+		} finally {
+			stmt.close();
+		}
+		
+		return contributions;
 	}
 	
 	public java.sql.Date convertJavaDateToSqlDate(java.util.Date date) {
