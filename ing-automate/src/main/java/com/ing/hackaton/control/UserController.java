@@ -79,4 +79,25 @@ public class UserController {
 
 		return user;
 	}
+	
+	@RequestMapping("/addAccessToken")
+	public Result addAccessToken(
+			@RequestParam(value = "username") String username,
+			@RequestParam(value = "access_token") String access_token) {
+
+		connector.connect();
+		
+		boolean r = false;
+		try {
+			r = impl.updateToken(connector.getConn(), username, access_token);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		connector.disconnect();
+		Result result = new Result(r);
+
+		return result;
+	}
 }

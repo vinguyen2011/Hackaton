@@ -1,78 +1,10 @@
 package com.ing.hackaton.control;
 
-import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ing.hackaton.datagather.DataGathering;
-import com.ing.hackaton.model.Account;
-import com.ing.hackaton.model.Bank;
 
 @RestController
 public class BankController {
-	private DataGathering dataCollector;
-
-	@RequestMapping("/banks")
-	public Bank bank(
-			@RequestParam(value = "name", defaultValue = "null") String name) {
-
-		dataCollector = new DataGathering();
-
-		// Business ...
-		Bank bank = new Bank();
-		try {
-			bank.parse(dataCollector
-					.get("https://api.openbankproject.com/obp/v1.2.1/banks/"
-							+ name));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		// Return Json String to the client
-		return bank;
-	}
-
-	@RequestMapping("/banks/accounts/public")
-	public Account bankPublicAccount(
-			@RequestParam(value = "name", defaultValue = "null") String name,
-			@RequestParam(value = "signed", defaultValue = "false") boolean signed) {
-
-		dataCollector = new DataGathering();
-
-		// Business ...
-		Account lastAccount = new Account();
-		try {
-			lastAccount.parse(dataCollector.get("https://api.openbankproject.com/obp/v1.2.1/banks/" + name
-							+ "/accounts/public"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		// Return Json String to the client
-		return lastAccount;
-	}
-
-	@RequestMapping("/banks/accounts/private")
-	public Account bankPrivateAccount(
-			@RequestParam(value = "name", defaultValue = "null") String name,
-			@RequestParam(value = "signed", defaultValue = "false") boolean signed) {
-
-		dataCollector = new DataGathering();
-
-		// Business ...
-		Account lastAccount = new Account();
-		try {
-			lastAccount.parse(dataCollector.get("https://api.openbankproject.com/obp/v1.2.1/banks/" + name
-							+ "/accounts/private"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-
-		// Return Json String to the client
-		return lastAccount;
-	}
+	
 }
 
 /*
