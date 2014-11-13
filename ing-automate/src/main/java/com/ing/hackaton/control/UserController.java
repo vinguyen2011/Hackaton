@@ -2,6 +2,7 @@ package com.ing.hackaton.control;
 
 import java.sql.SQLException;
 
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ing.hackaton.common.KeyGen;
 import com.ing.hackaton.database.DBConnector;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
+import com.ing.hackaton.model.KeyResult;
 import com.ing.hackaton.model.Result;
 import com.ing.hackaton.model.User;
 
@@ -18,7 +20,7 @@ public class UserController {
 	UserDaoImpl impl = new UserDaoImpl();
 	
 	@RequestMapping("/addUser")
-	public Result addUser(
+	public KeyResult addUser(
 			@RequestParam(value = "username") String username,
 			@RequestParam(value = "password") String password,
 			@RequestParam(value = "email") String email,
@@ -41,7 +43,7 @@ public class UserController {
 		}
 		
 		connector.disconnect();
-		Result result = new Result(r);
+		KeyResult result = new KeyResult(r);
 		if (r) {
 			result.setKey(secretKey);
 		}
@@ -49,7 +51,7 @@ public class UserController {
 	}
 	
 	@RequestMapping("/validateUser")
-	public Result validateUser(
+	public KeyResult validateUser(
 			@RequestParam(value = "username") String username,
 			@RequestParam(value = "password") String password) {
 
@@ -69,7 +71,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		connector.disconnect();
-		Result result = new Result(r);
+		KeyResult result = new KeyResult(r);
 		result.setKey(secretKey);
 
 		return result;
@@ -121,17 +123,20 @@ public class UserController {
 			@RequestParam(value = "email") String email,
 			@RequestParam(value = "image") String image,
 			@RequestParam(value = "firstname") String firstname,
-			@RequestParam(value = "lastname") String lastname){
+			@RequestParam(value = "lastname") String lastname,
+			@RequestHeader("APKey") String key){
 		
 		connector.connect();
 		
 		boolean r = false;
 		try {
 			User old = impl.getUser(connector.getConn(), username);
-			User user = new User(old.getUsername(), password, email, image, 
-					firstname, lastname);
+			if(key.equalsIgnoreCase(old.getKey())) {
+				User user = new User(old.getUsername(), password, email, image, 
+						firstname, lastname);
 
-			r = impl.updateUser(connector.getConn(), user);
+				r = impl.updateUser(connector.getConn(), user);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

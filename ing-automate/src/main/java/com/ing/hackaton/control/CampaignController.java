@@ -3,6 +3,7 @@ package com.ing.hackaton.control;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,16 +35,21 @@ public class CampaignController {
 			@RequestParam(value = "id_receiving_account") String id_receiving_account,
 			@RequestParam(value = "creator_username") String creator_username,
 			@RequestParam(value = "image_url") String image_url,
-			@RequestParam(value = "type") String type) {
+			@RequestParam(value = "type") String type,
+			
+			@RequestHeader("APKey") String key) {
 
 		connector.connect();
 		
 		boolean r = false;
 		try {
-			Campaign campaign = new Campaign(name, description, target_amount, 0, 
-					currency, id_receiving_account, creator_username, image_url, type);
-
-			r = impl.createCampaign(connector.getConn(), campaign);
+			if(userImpl.isValid(connector.getConn(), key)) {
+				Campaign campaign = new Campaign(name, description, target_amount, 0, 
+						currency, id_receiving_account, creator_username, image_url, type);
+	
+				r = impl.createCampaign(connector.getConn(), campaign);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,27 +63,32 @@ public class CampaignController {
 	
 	@RequestMapping("/updateCampaign")
 	public Result updateCampaign(
+			
 			@RequestParam(value = "id_campaign") int id_campaign,
 			@RequestParam(value = "name") String name,
 			@RequestParam(value = "description") String description,
 			@RequestParam(value = "target_amount") double target_amount,
 			@RequestParam(value = "image_url") String image_url,
-			@RequestParam(value = "type") String type) {
+			@RequestParam(value = "type") String type,
+			
+			@RequestHeader("APKey") String key) {
 
 		connector.connect();
 		
 		boolean r = false;
 		try {
 			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
-			if(!old.getType().equalsIgnoreCase("UNWINDED"))
-			{
-				old.setName(name);
-				old.setDescription(description);
-				old.setTarget_amount(target_amount);
-				old.setImage_url(image_url);
-				old.setType(type);
-				
-				r = impl.updateCampaign(connector.getConn(), old);
+			if(userImpl.getUser(connector.getConn(), old.getCreator_username()).getKey().equalsIgnoreCase(key)) {
+				if(!old.getType().equalsIgnoreCase("UNWINDED"))
+				{
+					old.setName(name);
+					old.setDescription(description);
+					old.setTarget_amount(target_amount);
+					old.setImage_url(image_url);
+					old.setType(type);
+					
+					r = impl.updateCampaign(connector.getConn(), old);
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -92,13 +103,17 @@ public class CampaignController {
 	
 	@RequestMapping("/getCampaign")
 	public Campaign getCampaign(
-			@RequestParam(value = "id_campaign") int id_campaign) {
+			@RequestParam(value = "id_campaign") int id_campaign,
+			
+			@RequestHeader("APKey") String key) {
 
 		connector.connect();
 		
 		Campaign campaign = null;
 		try {
-			campaign = impl.getCampaign(connector.getConn(), id_campaign);
+			if(userImpl.isValid(connector.getConn(), key)) {
+				campaign = impl.getCampaign(connector.getConn(), id_campaign);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,14 +126,18 @@ public class CampaignController {
 	
 	@RequestMapping("/user/getCampaigns")
 	public List<Campaign> getAllCampaignOfUser(
-			@RequestParam(value = "username") String username) {
+			@RequestParam(value = "username") String username,
+			
+			@RequestHeader("APKey") String key) {
 
 		connector.connect();
 		
 		List<Campaign> campaigns = null;
 		
 		try {
-			campaigns = impl.getAllCampaignOfUser(connector.getConn(), username);
+			if(userImpl.isValid(connector.getConn(), key)) {
+				campaigns = impl.getAllCampaignOfUser(connector.getConn(), username);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,14 +149,16 @@ public class CampaignController {
 	}
 	
 	@RequestMapping("/getCampaigns")
-	public List<Campaign> getAllCampaigns() {
+	public List<Campaign> getAllCampaigns(@RequestHeader("APKey") String key) {
 
 		connector.connect();
 		
 		List<Campaign> campaigns = null;
 		
 		try {
-			campaigns = impl.getAllCampaigns(connector.getConn());
+			if(userImpl.isValid(connector.getConn(), key)) {
+				campaigns = impl.getAllCampaigns(connector.getConn());
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -150,7 +171,8 @@ public class CampaignController {
 	
 	@RequestMapping("/unwindCampaign")
 	public Result unwindCampaign(
-		@RequestParam(value = "id_campaign") int id_campaign){
+		@RequestParam(value = "id_campaign") int id_campaign,
+		@RequestHeader("APKey") String key){
 		
 		connector.connect();
 		List<Contribution> mycontributions = null;
@@ -158,20 +180,22 @@ public class CampaignController {
 		
 		try {
 			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
+			if(userImpl.getUser(connector.getConn(), old.getCreator_username()).getKey().equalsIgnoreCase(key)) {
 
-			if(!old.getType().equalsIgnoreCase("UNWINDED"))
-			{
-				mycontributions = contImpl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
-				for (int i = 0; i < mycontributions.size(); i++) {
-				    Contribution thiscontribution = mycontributions.get(i);
-				    contController.unwindContribution(thiscontribution.getId());
+				if(!old.getType().equalsIgnoreCase("UNWINDED"))
+				{
+					mycontributions = contImpl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
+					for (int i = 0; i < mycontributions.size(); i++) {
+					    Contribution thiscontribution = mycontributions.get(i);
+					    contController.unwindContribution(thiscontribution.getId(), key);
+					}
+					
+					old.setDescription("UNWINDED");
+					old.setTarget_amount(0);
+					old.setType("UNWINDED");
+					
+					r = impl.updateCampaign(connector.getConn(), old);
 				}
-				
-				old.setDescription("UNWINDED");
-				old.setTarget_amount(0);
-				old.setType("UNWINDED");
-				
-				r = impl.updateCampaign(connector.getConn(), old);
 			}
 			
 		} catch (SQLException e) {

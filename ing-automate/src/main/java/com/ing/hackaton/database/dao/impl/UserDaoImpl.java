@@ -52,6 +52,27 @@ public class UserDaoImpl {
 		}
 		return success;
 	}
+	
+	public boolean isValid(Connection conn, String key)
+			throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("select * from user where apkey = ?");
+		boolean success = false;
+		try {
+			stmt.setString(1, key);
+
+			ResultSet rs = stmt.executeQuery();
+			rs.last();
+			if (rs.getRow() == 1) {
+				success = true;
+			}
+			rs.close();
+		} finally {
+			stmt.close();
+		}
+		return success;
+	}
+	
 
 	public User getUser(Connection conn, String username)
 			throws SQLException {
