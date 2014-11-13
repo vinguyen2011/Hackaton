@@ -14,9 +14,11 @@ public class Contribution {
 	private int id_campaign;
 	private String id_contributing_account;
 	private String description;
+	private String username_contributor;
 	
 	public Contribution(double amount, String currency, Date date, String comment,
-			int id_campaign, String id_contributing_account, String description) {
+			int id_campaign, String id_contributing_account, String description,
+			String username_contributor) {
     	this.amount = amount;
     	this.currency = currency;
     	this.date = date;
@@ -25,8 +27,17 @@ public class Contribution {
     	this.id_campaign = id_campaign;
     	this.id_contributing_account = id_contributing_account;
     	this.description = description;
+    	this.username_contributor = username_contributor;
     }
 	
+	public String getUsername_contributor() {
+		return username_contributor;
+	}
+
+	public void setUsername_contributor(String username_contributor) {
+		this.username_contributor = username_contributor;
+	}
+
 	public int getId() {
 		return id;
 	}

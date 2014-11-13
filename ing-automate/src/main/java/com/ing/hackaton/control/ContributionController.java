@@ -1,6 +1,7 @@
 package com.ing.hackaton.control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import com.ing.hackaton.database.dao.impl.CampaignDaoImpl;
 import com.ing.hackaton.database.dao.impl.ContributionDaoImpl;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.datagather.DataGathering;
+import com.ing.hackaton.email.SendEmail;
 import com.ing.hackaton.model.Campaign;
 import com.ing.hackaton.model.Contribution;
 import com.ing.hackaton.model.CurrentBankAccount;
@@ -70,7 +72,7 @@ public class ContributionController {
 			Calendar cal = Calendar.getInstance();
 			
 			Contribution contribution = new Contribution(amount, currency, cal.getTime(),
-					campaign.getName(), id_campaign, account.getId(), description);
+					campaign.getName(), id_campaign, account.getId(), description, source_username);
 
 			r = impl.createContribution(connector.getConn(), contribution);
 			
@@ -78,6 +80,16 @@ public class ContributionController {
 				//update campaign current amount
 				double new_amount = campaign.getCurrent_amount() + amount;
 				campaignImpl.updateCampaignCurrentAmount(connector.getConn(),id_campaign,new_amount);
+				if(new_amount >= campaign.getTarget_amount()) {
+					List<User> contributors = impl.getAllContributiorsOfCampaign(connector.getConn(), id_campaign);
+					List<String> emails = new ArrayList<String>();
+					
+					for (User c: contributors) {
+						emails.add(c.getEmail());
+					}
+					System.out.println(emails.toString());
+					new SendEmail().send(emails);
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
