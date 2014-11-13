@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ing.hackaton.database.DBConnector;
 import com.ing.hackaton.database.dao.impl.CampaignDaoImpl;
+import com.ing.hackaton.database.dao.impl.ContributionDaoImpl;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.datagather.DataGathering;
 import com.ing.hackaton.model.Campaign;
+import com.ing.hackaton.model.Contribution;
 import com.ing.hackaton.model.Result;
 
 @RestController
@@ -19,7 +21,9 @@ public class CampaignController {
 	DBConnector connector = new DBConnector();
 	CampaignDaoImpl impl = new CampaignDaoImpl();
 	UserDaoImpl userImpl = new UserDaoImpl();
+	ContributionDaoImpl contImpl = new ContributionDaoImpl();
 	DataGathering dataCollector = new DataGathering();
+	ContributionController contController = new ContributionController();
 	
 	@RequestMapping("/addCampaign")
 	public Result addCampaign(
@@ -139,5 +143,37 @@ public class CampaignController {
 		connector.disconnect();
 
 		return campaigns;
+	}
+	
+	@RequestMapping("/unwindCampaign")
+	public Result unwindCampaign(
+		@RequestParam(value = "id_campaign") int id_campaign){
+		
+		connector.connect();
+		List<Contribution> mycontributions = null;
+		boolean r = false;
+		
+		try {
+			mycontributions = contImpl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
+			for (int i = 0; i < mycontributions.size(); i++) {
+			    Contribution thiscontribution = mycontributions.get(i);
+			    contController.unwindContribution(thiscontribution.getId());
+			}
+			
+			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
+			old.setDescription("UNWINDED");
+			old.setTarget_amount(0);
+			old.setType("UNWINDED");
+			
+			r = impl.updateCampaign(connector.getConn(), old);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		connector.disconnect();
+		Result result = new Result(r);
+
+		return result;
 	}
 }

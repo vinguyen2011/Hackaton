@@ -188,7 +188,7 @@ public class ContributionController {
 			Calendar cal = Calendar.getInstance();
 			
 			Contribution contribution = new Contribution(old.getAmount()*-1, old.getCurrency(), cal.getTime(),
-					campaign.getName(), old.getId_campaign(), account.getId(), "", campaign.getCreator_username());
+					campaign.getName(), old.getId_campaign(), account.getId(), "PURGE contribution #" + old.getId(), campaign.getCreator_username());
 
 			r = impl.createContribution(connector.getConn(), contribution);
 			
