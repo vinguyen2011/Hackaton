@@ -14,8 +14,8 @@ public class CampaignDaoImpl {
 	public boolean createCampaign(Connection conn, Campaign campaign) throws SQLException {
 		PreparedStatement stmt = conn
 				.prepareStatement("insert into campaign (name, description, target_amount, current_amount,"
-						+ " currency, id_receiving_account, creator_username, image_url, type) "
-						+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						+ " currency, id_receiving_account, creator_username, image_url, type, date) "
+						+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		boolean success = false;
 		try {
 			stmt.setString(1, campaign.getName());
@@ -27,14 +27,37 @@ public class CampaignDaoImpl {
 			stmt.setString(7, campaign.getCreator_username());
 			stmt.setString(8, campaign.getImage_url());
 			stmt.setString(9, campaign.getType());
+			stmt.setString(10, campaign.getDate());
 			
 			stmt.executeUpdate();
 			success = true;
-
+			
 		} finally {
 			stmt.close();
 		}
 		return success;
+	}
+	
+	public int getCampaignId(Connection conn, Campaign obj)
+			throws SQLException {
+		PreparedStatement stmt = conn
+				.prepareStatement("select * from campaign where name = ? and "
+						+ " creator_username = ? and date = ?");
+		int id = 0;
+		try {
+			stmt.setString(1, obj.getName());
+			stmt.setString(2, obj.getCreator_username());
+			stmt.setString(3, obj.getDate());
+			
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {	
+				id = rs.getInt("idcampaign");
+			}
+			rs.close();
+		} finally {
+			stmt.close();
+		}
+		return id;
 	}
 	
 	public Campaign getCampaign(Connection conn, int id_campaign)
@@ -55,7 +78,8 @@ public class CampaignDaoImpl {
 						rs.getString("id_receiving_account"),
 						rs.getString("creator_username"),
 						rs.getString("image_url"),
-						rs.getString("type"));
+						rs.getString("type"),
+						rs.getString("date"));
 				campaign.setId(rs.getInt("idcampaign"));
 			}
 			rs.close();
@@ -85,7 +109,8 @@ public class CampaignDaoImpl {
 						rs.getString("id_receiving_account"),
 						rs.getString("creator_username"),
 						rs.getString("image_url"),
-						rs.getString("type"));
+						rs.getString("type"),
+						rs.getString("date"));
 				campaign.setId(rs.getInt("idcampaign"));
 				campaigns.add(campaign);
 			}
@@ -115,7 +140,8 @@ public class CampaignDaoImpl {
 						rs.getString("id_receiving_account"),
 						rs.getString("creator_username"),
 						rs.getString("image_url"),
-						rs.getString("type"));
+						rs.getString("type"),
+						rs.getString("date"));
 				campaign.setId(rs.getInt("idcampaign"));
 				campaigns.add(campaign);
 			}

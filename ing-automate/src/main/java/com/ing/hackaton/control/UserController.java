@@ -123,20 +123,18 @@ public class UserController {
 			@RequestParam(value = "email") String email,
 			@RequestParam(value = "image") String image,
 			@RequestParam(value = "firstname") String firstname,
-			@RequestParam(value = "lastname") String lastname,
-			@RequestHeader("APKey") String key){
+			@RequestParam(value = "lastname") String lastname){
 		
 		connector.connect();
 		
 		boolean r = false;
 		try {
 			User old = impl.getUser(connector.getConn(), username);
-			if(key.equalsIgnoreCase(old.getKey())) {
-				User user = new User(old.getUsername(), password, email, image, 
-						firstname, lastname);
+			User user = new User(old.getUsername(), password, email, image, 
+					firstname, lastname);
 
-				r = impl.updateUser(connector.getConn(), user);
-			}
+			r = impl.updateUser(connector.getConn(), user);
+		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

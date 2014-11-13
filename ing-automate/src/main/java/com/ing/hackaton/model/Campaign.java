@@ -14,10 +14,11 @@ public class Campaign {
 	private String creator_username;
 	private String image_url;
 	private String type;
+	private String date; 
 	
 	public Campaign(String name, String description, double target_amount, double current_amount,
     		String currency, String id_receiving_account, String creator_username,
-    		String image_url, String type) {
+    		String image_url, String type, String date) {
     	this.name = name;
     	this.description = description;
     	this.target_amount = target_amount;
@@ -27,8 +28,17 @@ public class Campaign {
     	this.creator_username = creator_username;
     	this.image_url = image_url;
     	this.type = type;
+    	this.date = date;
     }
 	
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
 	public int getId() {
 		return id;
 	}
