@@ -94,8 +94,7 @@ public class ContributionController {
 					emails.clear();
 					emails.addAll(hs);
 					
-					System.out.println(emails.toString());
-					new SendEmail().send(emails);
+					new SendEmail().send(emails, campaign.getName());
 				}
 			}
 		} catch (SQLException e) {

@@ -10,7 +10,7 @@ public class User {
     private String access_token;
     private int id;
     
-    public User(String username, String password, String image, String email,
+    public User(String username, String password, String email, String image,
     		String firstname, String lastname) {
     	this.username = username;
     	this.password = password;
