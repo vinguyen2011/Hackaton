@@ -132,4 +132,5 @@ public class ContributionDaoImpl {
 	public java.util.Date convertSqlDateToJavaDate(java.sql.Date date) {
 	    return new java.util.Date(date.getTime());
 	}
+	
 }

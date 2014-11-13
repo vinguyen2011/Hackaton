@@ -151,4 +151,66 @@ public class ContributionController {
 
 		return contributions;
 	}
+	
+	@RequestMapping("/unwindContribution")
+	public Result unwindContribution(
+			@RequestParam(value = "idcontribution") int idcontribution) {
+
+		connector.connect();
+
+		boolean r = false;
+		
+		try {
+			Contribution old = null;
+			old = impl.getContribution(connector.getConn(), idcontribution);
+			Campaign campaign = campaignImpl.getCampaign(connector.getConn(), old.getId_campaign());
+			
+			User source_user = userImpl.getUser(connector.getConn(), campaign.getCreator_username());
+			String source_userId = dataCollector.getUserId(source_user.getAccess_token());
+			String source_user_accounts = dataCollector.getWithToken(source_user.getAccess_token(), "persons/" + source_userId + "/accounts");
+			
+			account.parse(source_user_accounts);
+			
+			User target_user = userImpl.getUser(connector.getConn(), old.getUsername_contributor());
+			
+			TransferRequest transfer = new TransferRequest();
+			
+			String objStr = transfer.newTransfer(account.getId(),
+					campaign.getId_receiving_account(),
+					target_user.getFirstname() + "," + target_user.getLastname(),
+					old.getAmount(), campaign.getName(), "refund of campaign " + old.getId_campaign());
+			
+			String step1 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers", objStr);
+			String step2 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step1);
+			String step3 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step2);
+			String step4 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/sign?PIN=12345", step3);
+			dataCollector.postTransaction(source_user.getAccess_token(), "transfers/execute", step4);
+
+			Calendar cal = Calendar.getInstance();
+			
+			Contribution contribution = new Contribution(old.getAmount()*-1, old.getCurrency(), cal.getTime(),
+					campaign.getName(), old.getId_campaign(), account.getId(), "", campaign.getCreator_username());
+
+			r = impl.createContribution(connector.getConn(), contribution);
+			
+			if(r) {
+				//update campaign current amount
+				double new_amount = campaign.getCurrent_amount() - old.getAmount();
+				campaignImpl.updateCampaignCurrentAmount(connector.getConn(),campaign.getId(),new_amount);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		connector.disconnect();
+		Result result = new Result(r);
+
+		return result;
+	}
+	
 }
