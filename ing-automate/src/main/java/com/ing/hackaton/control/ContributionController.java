@@ -174,10 +174,10 @@ public class ContributionController {
 			
 			TransferRequest transfer = new TransferRequest();
 			
-			String objStr = transfer.newTransfer(account.getId(),
-					campaign.getId_receiving_account(),
+			String objStr = transfer.newTransfer(campaign.getId_receiving_account(),
+					old.getId_contributing_account(),
 					target_user.getFirstname() + "," + target_user.getLastname(),
-					old.getAmount(), campaign.getName(), "refund of campaign " + old.getId_campaign());
+					old.getAmount(), campaign.getName(), "Refund of campaign " + old.getId_campaign());
 			
 			String step1 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers", objStr);
 			String step2 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step1);
