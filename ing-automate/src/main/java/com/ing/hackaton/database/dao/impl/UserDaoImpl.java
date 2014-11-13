@@ -11,8 +11,8 @@ import java.sql.PreparedStatement;
 public class UserDaoImpl {
 	public boolean createUser(Connection conn, User user) throws SQLException {
 		PreparedStatement stmt = conn
-				.prepareStatement("insert into user (USERNAME, PASSWORD, EMAIL, IMAGE, FIRSTNAME, LASTNAME) "
-						+ "values (?, ?, ?, ?, ?, ?)");
+				.prepareStatement("insert into user (USERNAME, PASSWORD, EMAIL, IMAGE, FIRSTNAME, LASTNAME, APKEY) "
+						+ "values (?, ?, ?, ?, ?, ?, ?)");
 		boolean success = false;
 		try {
 			stmt.setString(1, user.getUsername());
@@ -21,7 +21,8 @@ public class UserDaoImpl {
 			stmt.setString(4, user.getImage());
 			stmt.setString(5, user.getFirstname());
 			stmt.setString(6, user.getLastname());
-
+			stmt.setString(7, user.getKey());
+			
 			stmt.executeUpdate();
 			success = true;
 
@@ -69,6 +70,7 @@ public class UserDaoImpl {
 						rs.getString("firstname"),
 						rs.getString("lastname"));
 				user.setId(rs.getInt("iduser"));
+				user.setKey(rs.getString("apkey"));
 				user.setAccess_token(rs.getString("access_token"));
 			}
 			rs.close();

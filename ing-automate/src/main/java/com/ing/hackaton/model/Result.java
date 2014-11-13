@@ -1,7 +1,11 @@
 package com.ing.hackaton.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
 	private String result = "false";
+    private String key;
     
     public Result(boolean r) {
 		if (r) {
@@ -12,4 +16,18 @@ public class Result {
 	public String getResult() {
 		return result;
 	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+	
+	
 }

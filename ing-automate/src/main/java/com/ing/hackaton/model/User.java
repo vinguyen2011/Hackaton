@@ -8,6 +8,7 @@ public class User {
     private String firstname;
     private String lastname;
     private String access_token;
+    private String key;
     private int id;
     
     public User(String username, String password, String email, String image,
@@ -20,6 +21,14 @@ public class User {
     	this.lastname = lastname;
     }
     		
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	public String getAccess_token() {
 		return access_token;
 	}

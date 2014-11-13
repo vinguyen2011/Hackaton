@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ing.hackaton.common.KeyGen;
 import com.ing.hackaton.database.DBConnector;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.model.Result;
@@ -28,6 +29,9 @@ public class UserController {
 		User user = new User(username, password, email, image, firstname, lastname);
 		connector.connect();
 		
+		String secretKey = new KeyGen().getKey();
+		user.setKey(secretKey);
+
 		boolean r = false;
 		try {
 			r = impl.createUser(connector.getConn(), user);
@@ -38,7 +42,9 @@ public class UserController {
 		
 		connector.disconnect();
 		Result result = new Result(r);
-
+		if (r) {
+			result.setKey(secretKey);
+		}
 		return result;
 	}
 	
@@ -48,16 +54,23 @@ public class UserController {
 			@RequestParam(value = "password") String password) {
 
 		connector.connect();
-		
+
+		String secretKey = null;
+	
 		boolean r = false;
 		try {
 			r = impl.isValid(connector.getConn(), username, password);
+			if (r) {
+				User user = impl.getUser(connector.getConn(), username);
+				secretKey = user.getKey();
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		connector.disconnect();
 		Result result = new Result(r);
+		result.setKey(secretKey);
 
 		return result;
 	}
