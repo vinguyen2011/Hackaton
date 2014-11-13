@@ -56,45 +56,48 @@ public class ContributionController {
 			account.parse(source_user_accounts);
 			
 			Campaign campaign = campaignImpl.getCampaign(connector.getConn(), id_campaign);
-			User target_user = userImpl.getUser(connector.getConn(), campaign.getCreator_username());
-			
-			TransferRequest transfer = new TransferRequest();
-			
-			String objStr = transfer.newTransfer(account.getId(),
-					campaign.getId_receiving_account(),
-					target_user.getFirstname() + "," + target_user.getLastname(),
-					amount, campaign.getName(), description);
-			
-			String step1 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers", objStr);
-			String step2 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step1);
-			String step3 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step2);
-			String step4 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/sign?PIN=12345", step3);
-			dataCollector.postTransaction(source_user.getAccess_token(), "transfers/execute", step4);
-
-			Calendar cal = Calendar.getInstance();
-			
-			Contribution contribution = new Contribution(amount, currency, cal.getTime(),
-					campaign.getName(), id_campaign, account.getId(), description, source_username);
-
-			r = impl.createContribution(connector.getConn(), contribution);
-			
-			if(r) {
-				//update campaign current amount
-				double new_amount = campaign.getCurrent_amount() + amount;
-				campaignImpl.updateCampaignCurrentAmount(connector.getConn(),id_campaign,new_amount);
-				if(new_amount >= campaign.getTarget_amount()) {
-					List<User> contributors = impl.getAllContributiorsOfCampaign(connector.getConn(), id_campaign);
-					List<String> emails = new ArrayList<String>();
-					
-					for (User c: contributors) {
-						emails.add(c.getEmail());
+			if(!campaign.getType().equalsIgnoreCase("UNWINDED"))
+			{
+				User target_user = userImpl.getUser(connector.getConn(), campaign.getCreator_username());
+				
+				TransferRequest transfer = new TransferRequest();
+				
+				String objStr = transfer.newTransfer(account.getId(),
+						campaign.getId_receiving_account(),
+						target_user.getFirstname() + "," + target_user.getLastname(),
+						amount, campaign.getName(), description);
+				
+				String step1 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers", objStr);
+				String step2 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step1);
+				String step3 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/next", step2);
+				String step4 = dataCollector.postTransaction(source_user.getAccess_token(), "transfers/sign?PIN=12345", step3);
+				dataCollector.postTransaction(source_user.getAccess_token(), "transfers/execute", step4);
+	
+				Calendar cal = Calendar.getInstance();
+				
+				Contribution contribution = new Contribution(amount, currency, cal.getTime(),
+						campaign.getName(), id_campaign, account.getId(), description, source_username);
+	
+				r = impl.createContribution(connector.getConn(), contribution);
+				
+				if(r) {
+					//update campaign current amount
+					double new_amount = campaign.getCurrent_amount() + amount;
+					campaignImpl.updateCampaignCurrentAmount(connector.getConn(),id_campaign,new_amount);
+					if(new_amount >= campaign.getTarget_amount()) {
+						List<User> contributors = impl.getAllContributiorsOfCampaign(connector.getConn(), id_campaign);
+						List<String> emails = new ArrayList<String>();
+						
+						for (User c: contributors) {
+							emails.add(c.getEmail());
+						}
+						HashSet<String> hs = new HashSet<String>();
+						hs.addAll(emails);
+						emails.clear();
+						emails.addAll(hs);
+						
+						new SendEmail().send(emails, campaign.getName());
 					}
-					HashSet<String> hs = new HashSet<String>();
-					hs.addAll(emails);
-					emails.clear();
-					emails.addAll(hs);
-					
-					new SendEmail().send(emails, campaign.getName());
 				}
 			}
 		} catch (SQLException e) {

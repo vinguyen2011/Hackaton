@@ -69,13 +69,16 @@ public class CampaignController {
 		boolean r = false;
 		try {
 			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
-			old.setName(name);
-			old.setDescription(description);
-			old.setTarget_amount(target_amount);
-			old.setImage_url(image_url);
-			old.setType(type);
-			
-			r = impl.updateCampaign(connector.getConn(), old);
+			if(!old.getType().equalsIgnoreCase("UNWINDED"))
+			{
+				old.setName(name);
+				old.setDescription(description);
+				old.setTarget_amount(target_amount);
+				old.setImage_url(image_url);
+				old.setType(type);
+				
+				r = impl.updateCampaign(connector.getConn(), old);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -154,18 +157,23 @@ public class CampaignController {
 		boolean r = false;
 		
 		try {
-			mycontributions = contImpl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
-			for (int i = 0; i < mycontributions.size(); i++) {
-			    Contribution thiscontribution = mycontributions.get(i);
-			    contController.unwindContribution(thiscontribution.getId());
+			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
+
+			if(!old.getType().equalsIgnoreCase("UNWINDED"))
+			{
+				mycontributions = contImpl.getAllContributionsOfCampaign(connector.getConn(), id_campaign);
+				for (int i = 0; i < mycontributions.size(); i++) {
+				    Contribution thiscontribution = mycontributions.get(i);
+				    contController.unwindContribution(thiscontribution.getId());
+				}
+				
+				old.setDescription("UNWINDED");
+				old.setTarget_amount(0);
+				old.setType("UNWINDED");
+				
+				r = impl.updateCampaign(connector.getConn(), old);
 			}
 			
-			Campaign old = impl.getCampaign(connector.getConn(), id_campaign);
-			old.setDescription("UNWINDED");
-			old.setTarget_amount(0);
-			old.setType("UNWINDED");
-			
-			r = impl.updateCampaign(connector.getConn(), old);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
