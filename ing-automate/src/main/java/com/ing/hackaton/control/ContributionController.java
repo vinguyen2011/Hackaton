@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ing.hackaton.common.SendEmail;
 import com.ing.hackaton.database.DBConnector;
 import com.ing.hackaton.database.dao.impl.CampaignDaoImpl;
 import com.ing.hackaton.database.dao.impl.ContributionDaoImpl;
 import com.ing.hackaton.database.dao.impl.UserDaoImpl;
 import com.ing.hackaton.datagather.DataGathering;
-import com.ing.hackaton.email.SendEmail;
 import com.ing.hackaton.model.Campaign;
 import com.ing.hackaton.model.Contribution;
 import com.ing.hackaton.model.CurrentBankAccount;

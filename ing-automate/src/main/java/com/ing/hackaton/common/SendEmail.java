@@ -1,4 +1,4 @@
-package com.ing.hackaton.email;
+package com.ing.hackaton.common;
 
 //File Name SendEmail.java
 

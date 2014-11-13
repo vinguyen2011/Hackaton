@@ -20,12 +20,12 @@ public class UserController {
 	public Result addUser(
 			@RequestParam(value = "username") String username,
 			@RequestParam(value = "password") String password,
-			@RequestParam(value = "image") String image,
 			@RequestParam(value = "email") String email,
+			@RequestParam(value = "image", required = false) String image,
 			@RequestParam(value = "firstname") String firstname,
 			@RequestParam(value = "lastname") String lastname) {
 
-		User user = new User(username, password, image, email, firstname, lastname);
+		User user = new User(username, password, email, image, firstname, lastname);
 		connector.connect();
 		
 		boolean r = false;
@@ -115,7 +115,7 @@ public class UserController {
 		boolean r = false;
 		try {
 			User old = impl.getUser(connector.getConn(), username);
-			User user = new User(old.getUsername(), password, image, email, 
+			User user = new User(old.getUsername(), password, email, image, 
 					firstname, lastname);
 
 			r = impl.updateUser(connector.getConn(), user);
