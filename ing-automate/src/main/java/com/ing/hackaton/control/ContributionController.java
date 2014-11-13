@@ -3,6 +3,7 @@ package com.ing.hackaton.control;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class ContributionController {
 	
 	CurrentBankAccount account = new CurrentBankAccount();
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/addContribution")
 	public Result addContribution(
 			@RequestParam(value = "source_username") String source_username,
@@ -87,6 +89,11 @@ public class ContributionController {
 					for (User c: contributors) {
 						emails.add(c.getEmail());
 					}
+					HashSet<String> hs = new HashSet<String>();
+					hs.addAll(emails);
+					emails.clear();
+					emails.addAll(hs);
+					
 					System.out.println(emails.toString());
 					new SendEmail().send(emails);
 				}

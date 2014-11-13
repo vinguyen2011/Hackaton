@@ -47,7 +47,7 @@ public class SendEmail {
 			message.setText("This is actual message");
 
 			// Send message
-			Transport.send(message);
+			//Transport.send(message);
 			System.out.println("Sent message successfully....");
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
